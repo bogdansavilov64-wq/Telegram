@@ -21,6 +21,38 @@ jobs:
           cd src
           sed -i 's/^APP_PACKAGE=.*/APP_PACKAGE=com.metagram.messenger/' gradle.properties
           find TMessagesProj/src/main/res -name strings.xml -exec sed -i 's|<string name="AppName">[^<]*</string>|<string name="AppName">Metagram</string>|g' {} +
+          cat > TMessagesProj/google-services.json <<'JSON'
+          {
+            "project_info": {
+              "project_number": "123456789012",
+              "firebase_url": "https://metagram-default-rtdb.firebaseio.com",
+              "project_id": "metagram",
+              "storage_bucket": "metagram.appspot.com"
+            },
+            "client": [
+              {
+                "client_info": {
+                  "mobilesdk_app_id": "1:123456789012:android:1234567890abcdef",
+                  "android_client_info": { "package_name": "com.metagram.messenger" }
+                },
+                "oauth_client": [],
+                "api_key": [ { "current_key": "AIzaSyA1234567890abcdefghijklmnopqrst" } ],
+                "services": { "appinvite_service": { "other_platform_oauth_client": [] } }
+              },
+              {
+                "client_info": {
+                  "mobilesdk_app_id": "1:123456789012:android:abcdef1234567890",
+                  "android_client_info": { "package_name": "com.metagram.messenger.beta" }
+                },
+                "oauth_client": [],
+                "api_key": [ { "current_key": "AIzaSyA1234567890abcdefghijklmnopqrst" } ],
+                "services": { "appinvite_service": { "other_platform_oauth_client": [] } }
+              }
+            ],
+            "configuration_version": "1"
+          }
+          JSON
+          cp TMessagesProj/google-services.json google-services.json
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
