@@ -1,3 +1,4 @@
+
 name: Build Metagram APK
 
 on:
@@ -27,19 +28,17 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
-
-      - name: Install SDK components
+      - name: Install Android SDK components
         run: |
-          yes | sdkmanager --licenses > /dev/null
-          sdkmanager "platforms;android-36" "build-tools;36.0.0" "ndk;27.2.12479018" "cmake;3.22.1"
+          export ANDROID_HOME=/usr/local/lib/android/sdk
+          export ANDROID_SDK_ROOT=$ANDROID_HOME
+          SDKMANAGER=$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager
+          [ -x "$SDKMANAGER" ] || SDKMANAGER=$(find $ANDROID_HOME -name sdkmanager -type f | sort | tail -n 1)
+          yes | $SDKMANAGER --licenses > /dev/null || true
+          $SDKMANAGER "platforms;android-36" "build-tools;36.0.0" "ndk;27.2.12479018" "cmake;3.22.1"
 
       - name: Build APK
-        run: |
-          cd src
-          chmod +x gradlew
-          ./gradlew assembleDebug --no-daemon
+        run: cd src && chmod +x gradlew &&./gradlew assembleDebug --no-daemon
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
